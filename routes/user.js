@@ -130,6 +130,7 @@ router.post(
   authMiddleware,
   createNewOffer
 );
+
 router.post(
   "/user/get-private-rooms",
   requireSignIn,

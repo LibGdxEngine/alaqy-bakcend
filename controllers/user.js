@@ -161,7 +161,10 @@ exports.getRoom = (req, res) => {
 exports.getMyPrivateRooms = (req, res) => {
   const sender = req.body.sender;
 
-  Offer.find({ sender, privateRoom: { $ne: null } }).exec((err, offers) => {
+  Offer.find({
+    $or: [{ sender }, { receiver: sender }],
+    privateRoom: { $ne: null },
+  }).exec((err, offers) => {
     if (err) {
       return res.status(400).json({
         error: err,
@@ -214,7 +217,8 @@ exports.getMyRequests = (req, res) => {
   User.findById(userId)
     .populate({
       path: "requests",
-      select: "owner requestDesc requestPhoto requestCategory status createdAt",
+      select:
+        "owner requestDesc requestPhoto requestCategory requestName status createdAt",
     })
     .exec((err, user) => {
       const requests = user.requests;
@@ -268,6 +272,7 @@ exports.createNewRequest = (req, res) => {
   newRequest.requestPhoto = requestData.fileData;
   newRequest.requestDesc = requestData.requestDescription;
   newRequest.requestCategory = requestData.requestCategory;
+  newRequest.requestName = requestData.requestName;
   newRequest.save();
 
   User.findByIdAndUpdate(

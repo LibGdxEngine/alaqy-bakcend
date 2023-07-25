@@ -13,6 +13,9 @@ const requestSchema = mongoose.Schema(
       type: mongoose.ObjectId,
       ref: "User",
     },
+    requestName: {
+      type: String,
+    },
     requestPhoto: {
       type: String,
     },
